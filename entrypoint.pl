@@ -35,6 +35,18 @@ unless (getpwuid("$uid")){
 system("mkdir", "/logs") unless ( -d "/logs" );
 system("chown docker.docker -R /logs");
 
+# 修复不恰当的权限
+if ( -d "/zentaopms/tmp/") {
+  system("chmod 755 -R /zentaopms/tmp/");
+  system("chown docker.docker -R /zentaopms/tmp/");
+}
+if ( -d "/zentaopms/config/"){
+  system("chmod 755 /zentaopms/config/");
+  system("chown docker.docker /zentaopms/config/");
+}
+system("chmod 755 /zentaopms/module/")           if ( -d "/zentaopms/module/");
+system("chmod 644 /zentaopms/config/config.php") if ( -f "/zentaopms/config/config.php");
+
 # 切换当前运行用户,先切GID.
 #$GID = $EGID = $gid;
 #$UID = $EUID = $uid;
