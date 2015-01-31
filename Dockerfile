@@ -9,6 +9,9 @@ RUN export http_proxy="http://172.17.42.1:8080/" \
     && apt-get install -y wget unzip \
     && wget -O /zentao.zip $SOURCE   \
     && unzip /zentao.zip \
+    && /bin/rm -f /zentao.zip \
+    && apt-get purge -y unzip wget \
+    && apt-get autoremove -y \
     && apt-get clean \
     && unset http_proxy DEBIAN_FRONTEND \
     && rm -rf usr/share/locale \
