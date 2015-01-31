@@ -16,7 +16,7 @@ RUN export http_proxy="http://172.17.42.1:8080/" \
     && rm -rf usr/share/doc    \
     && rm -rf usr/share/info
 
-ADD ./php-fpm.conf  /etc/php5/fpm/php-fpm.conf
+ADD ./conf/php-fpm.conf  /etc/php5/fpm/php-fpm.conf
 ADD ./entrypoint.pl /entrypoint.pl
 
 ENTRYPOINT ["/entrypoint.pl"]
