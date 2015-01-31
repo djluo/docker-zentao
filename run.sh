@@ -33,6 +33,12 @@ _run() {
   local name="$container_name"
   #local cmd="ruby script/rails server webrick -e production -p9292"
   local cmd=""
+  local conf="${current_dir}/conf/my.php"
+
+  [ -f ${conf} ] \
+    && sudo chmod 600 ${conf} \
+    && sudo chown ${User_Id}.${User_Id} ${conf} \
+    && local volume="-v ${conf}:/zentaopms/config/my.php"
 
   [ "x$1" == "xdebug" ] && _run_debug
 
@@ -40,7 +46,7 @@ _run() {
     --link zentao-mysql:mysql \
     -e "TZ=Asia/Shanghai"     \
     -e "User_Id=${User_Id}"   \
-    -w "/zentaopms/"          \
+    -w "/zentaopms/" $volume  \
     -v ${current_dir}/logs/:/logs/ \
     -v ${current_dir}/www/:/zentaopms/www/   \
     --name ${name} ${images} \
