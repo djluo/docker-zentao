@@ -31,7 +31,6 @@ _port
 _run() {
   local mode="-d"
   local name="$container_name"
-  #local cmd="ruby script/rails server webrick -e production -p9292"
   local cmd=""
   local conf="${current_dir}/conf/my.php"
 
@@ -42,6 +41,7 @@ _run() {
 
   [ "x$1" == "xdebug" ] && _run_debug
 
+  #-v ${current_dir}/log/:/zentaopms/tmp/log/   \
   sudo docker run $mode $port \
     --link zentao-mysql:mysql \
     -e "TZ=Asia/Shanghai"     \
