@@ -47,6 +47,21 @@ if ( -d "/zentaopms/config/"){
 system("chmod 755 /zentaopms/module/")           if ( -d "/zentaopms/module/");
 system("chmod 644 /zentaopms/config/config.php") if ( -f "/zentaopms/config/config.php");
 
+if( $ENV{'RSYNC_PASSWORD'} ){
+  system("rm", "-f", "/run/crond.pid") if ( -f "/run/crond.pid" );
+  system("/usr/sbin/cron");
+
+  my $min  = int(rand(60));
+  my $hour = int(rand(5));
+
+  my $ip=$ENV{'backup_ip'};
+  my $dest=$ENV{'backup_dest'}."_".$ENV{'HOSTNAME'};
+
+  open (CRON,"|/usr/bin/crontab -u docker -") or die "crontab error?";
+  print CRON ("$min $hour * * * (/usr/bin/rsync --del --port=2873 -al /zentaopms/www/ docker@". $ip ."::backup/$dest/)\n");
+  close(CRON);
+}
+
 # 切换当前运行用户,先切GID.
 #$GID = $EGID = $gid;
 #$UID = $EUID = $uid;
