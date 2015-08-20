@@ -41,7 +41,9 @@ _run() {
 
   [ "x$1" == "xdebug" ] && _run_debug
 
-  #-v ${current_dir}/log/:/zentaopms/tmp/log/   \
+    #-e "RSYNC_PASSWORD=docker" \
+    #-e "backup_dest=$name"     \
+    #-e "backup_ip=172.17.42.1" \
   sudo docker run $mode $port \
     --link zentao-mysql:mysql \
     -e "TZ=Asia/Shanghai"     \
