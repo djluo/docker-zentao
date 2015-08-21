@@ -56,9 +56,19 @@ if( $ENV{'RSYNC_PASSWORD'} ){
 
   my $ip=$ENV{'backup_ip'};
   my $dest=$ENV{'backup_dest'}."_".$ENV{'HOSTNAME'};
+  my $port="2873";
+  $port="$ENV{'RSYNC_PORT'}" if ( $ENV{'RSYNC_PORT'} );
+  my $rsync_opts = "/usr/bin/rsync --del --port=$port -al --password-file=/rsync.pass";
 
-  open (CRON,"|/usr/bin/crontab -u docker -") or die "crontab error?";
-  print CRON ("$min $hour * * * (/usr/bin/rsync --del --port=2873 -al /zentaopms/www/ docker@". $ip ."::backup/$dest/)\n");
+  my $umask = umask;
+  umask 0277;
+  open (PW,'>', '/rsync.pass') or die "$!";
+  print PW $ENV{'RSYNC_PASSWORD'};
+  close(PW);
+  umask $umask;
+
+  open (CRON,"|/usr/bin/crontab") or die "crontab error?";
+  print CRON ("$min $hour * * * ($rsync_opts /zentaopms/www/ docker@". $ip ."::backup/$dest/)\n");
   close(CRON);
 }
 
